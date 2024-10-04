@@ -76,6 +76,12 @@ if ! grep -q 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel1
   echo 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"' >> "${HOME}/.zshrc"
 fi
 
+# Ensure .p10k.zsh is sourced
+if ! grep -q 'source "${HOME}/.p10k.zsh"' "${HOME}/.zshrc"; then
+  echo 'source "${HOME}/.p10k.zsh"' >> "${HOME}/.zshrc"
+  echo ".p10k.zsh sourced successfully!"
+fi
+
 # Set Zsh as the default shell
 if [[ "$SHELL" != "/bin/zsh" ]]; then
   chsh -s /bin/zsh
@@ -87,4 +93,4 @@ fi
 # Load the Zsh configuration
 source "${HOME}/.zshrc"
 
-verboseLog "Zsh setup completed successfully!"
+verboseLog "Zsh and Powerlevel10k setup completed successfully!"
