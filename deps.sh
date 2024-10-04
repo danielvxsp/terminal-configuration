@@ -27,7 +27,11 @@ fi
 verboseLog "Installing dependencies..."
 $install_cmd git curl zsh kitty
 
-export ZDOTDIR="${HOME}/.config/zshconf"  # Move config to a user-specific directory
+# Set ZDOTDIR for user-specific Zsh configuration
+export ZDOTDIR="${HOME}/.config/zshconf"
+mkdir -p "$ZDOTDIR"
+
+# Clone your terminal configuration repository
 if [[ ! -d "$ZDOTDIR" ]]; then
   git clone "https://github.com/danielvxsp/terminal-configuration.git" "$ZDOTDIR"
   chmod -R 755 "$ZDOTDIR"
@@ -35,69 +39,52 @@ else
   echo "$ZDOTDIR already exists. Skipping clone..."
 fi
 
-mkdir -p "${ZDOTDIR}/user"
-
-# Determine the location for user-specific configuration
-cfg_location="${XDG_CONFIG_HOME:-${HOME}/.config}/zsh"
-if [[ ! -d "$cfg_location" ]]; then
-  mkdir -p "$cfg_location"
-fi
-
-# Create a soft link for user configuration
-ln -sf "$cfg_location" "${ZDOTDIR}/user/$USER"
-chmod -R 700 "${ZDOTDIR}/user/$USER"
-
-# Create completions directory
-mkdir -p "${ZDOTDIR}/completions/$USER"
-chmod 700 "${ZDOTDIR}/completions/$USER"
-
-echo "Installing Oh My Zsh..."
-if [[ ! -d "${ZDOTDIR}/ohmyzsh" ]]; then
-  git clone "https://github.com/ohmyzsh/ohmyzsh.git" "${ZDOTDIR}/ohmyzsh"
+# Copy .zshrc and .p10k.zsh files to ZDOTDIR
+verboseLog "Copying Zsh configuration files..."
+if [[ -f "${ZDOTDIR}/.zshrc" ]]; then
+  cp "${ZDOTDIR}/.zshrc" "${HOME}/.zshrc"
+  echo ".zshrc copied successfully!"
 else
-  echo "Oh My Zsh already installed."
+  echo ".zshrc file not found in the repository!"
 fi
 
-# Set Zsh as the default shell (if not already set)
+if [[ -f "${ZDOTDIR}/.p10k.zsh" ]]; then
+  cp "${ZDOTDIR}/.p10k.zsh" "${HOME}/.p10k.zsh"
+  echo ".p10k.zsh copied successfully!"
+else
+  echo ".p10k.zsh file not found in the repository!"
+fi
+
+# Install Oh My Zsh in its default location (~/.oh-my-zsh)
+if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
+  echo "Installing Oh My Zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+else
+  echo "Oh My Zsh is already installed."
+fi
+
+# Install Powerlevel10k in its default location (~/.oh-my-zsh/custom/themes/powerlevel10k)
+if [[ ! -d "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" ]]; then
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
+  echo "Powerlevel10k installed."
+else
+  echo "Powerlevel10k is already installed."
+fi
+
+# Ensure Powerlevel10k is sourced in .zshrc
+if ! grep -q 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"' "${HOME}/.zshrc"; then
+  echo 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"' >> "${HOME}/.zshrc"
+fi
+
+# Set Zsh as the default shell
 if [[ "$SHELL" != "/bin/zsh" ]]; then
   chsh -s /bin/zsh
-fi
-
-echo "Oh My Zsh installed successfully!"
-
-if [[ ! -d "${ZDOTDIR}/powerlevel10k" ]]; then
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZDOTDIR}/powerlevel10k"
+  echo "Zsh is now the default shell. Please restart the terminal to use Zsh."
 else
-  echo "Powerlevel10k already installed."
+  echo "Zsh is already the default shell."
 fi
 
-# Update the .zshrc file to use Powerlevel10k
-if ! grep -q 'source "$ZDOTDIR/powerlevel10k/powerlevel10k.zsh-theme"' "${cfg_location}/.zshrc"; then
-  echo 'source "$ZDOTDIR/powerlevel10k/powerlevel10k.zsh-theme"' >> "${cfg_location}/.zshrc"
-fi
+# Load the Zsh configuration
+source "${HOME}/.zshrc"
 
-# Load config files to apply changes
-source "${cfg_location}/.zshrc"
-
-verboseLog "Installing Kitty terminal configuration..."
-
-# Install Kitty configuration from the repo into ~/.config/kitty
-kitty_config_location="${XDG_CONFIG_HOME:-${HOME}/.config}/kitty"
-
-# Ensure the Kitty config directory exists
-if [[ ! -d "$kitty_config_location" ]]; then
-  mkdir -p "$kitty_config_location"
-fi
-
-# Copy only the Kitty config files from the repo, not the entire repo
-if [[ -d "${ZDOTDIR}/kitty" ]]; then
-  cp -r "${ZDOTDIR}/kitty/." "$kitty_config_location/"
-  echo "Kitty configuration installed successfully!"
-else
-  echo "Kitty folder not found in the repository!"
-fi
-
-chmod -R 755 "$kitty_config_location"
-
-echo "Kitty configuration installed successfully!"
-echo "Setup completed successfully!"
+verboseLog "Zsh setup completed successfully!"
