@@ -82,9 +82,25 @@ if ! grep -q 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel1
   verboseLog "Powerlevel10k theme sourced in .zshrc."
 fi
 
-# Source the updated .zshrc and .p10k.zsh
-verboseLog "Sourcing .zshrc and .p10k.zsh..."
-source ~/.zshrc
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Copy Kitty config files from the repository to .config/kitty
+KITTY_CONFIG_DIR="${HOME}/.config/kitty"
+if [[ -d "${TERMINAL_CONFIG_DIR}/kitty" ]]; then
+  mkdir -p "$KITTY_CONFIG_DIR"
+  cp -r "${TERMINAL_CONFIG_DIR}/kitty/." "$KITTY_CONFIG_DIR"
+  verboseLog "Kitty config files copied to ${KITTY_CONFIG_DIR}."
+else
+  verboseLog "Kitty config files not found in the repository."
+fi
 
-verboseLog "Zsh and Powerlevel10k setup completed successfully!"
+# Optionally delete the cloned repository
+read -p "Do you want to delete the terminal configuration repo? (y/n): " delete_repo
+if [[ $delete_repo == "y" ]]; then
+  rm -rf "$TERMINAL_CONFIG_DIR"
+  verboseLog "Terminal configuration repository deleted."
+else
+  verboseLog "Terminal configuration repository retained."
+fi
+
+source ~/.zshrc
+
+verboseLog "Zsh setup completed successfully!"
