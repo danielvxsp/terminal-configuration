@@ -52,14 +52,6 @@ else
   verboseLog ".p10k.zsh file not found in the repository!"
 fi
 
-# Set Zsh as the default shell if not already
-if [[ "$SHELL" != "/bin/zsh" ]]; then
-  chsh -s /bin/zsh
-  echo "Zsh is now the default shell. Please restart the terminal to use Zsh."
-else
-  verboseLog "Zsh is already the default shell."
-fi
-
 # Install Oh My Zsh if not already installed
 if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
   verboseLog "Installing Oh My Zsh..."
