@@ -53,6 +53,9 @@ else
   echo ".zshrc file not found in the repository!"
 fi
 
+# switch to zsh for the rest of the script (I dont think it works like this but its worth a shot)
+zsh
+
 # Install Oh My Zsh in its default location (~/.oh-my-zsh)
 if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
   echo "Installing Oh My Zsh..."
