@@ -27,6 +27,8 @@ fi
 verboseLog "Installing dependencies..."
 $install_cmd git curl zsh kitty
 
+chsh -s /bin/zsh
+
 # Set ZDOTDIR for user-specific Zsh configuration
 export ZDOTDIR="${HOME}/.config/zshconf"
 mkdir -p "$ZDOTDIR"
