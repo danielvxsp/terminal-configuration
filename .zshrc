@@ -14,7 +14,8 @@ plugins=(git)
 # Source Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+print 'going to source ~/.p10k.zsh; press enter to continue'
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
