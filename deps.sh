@@ -81,4 +81,6 @@ if ! grep -q 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel1
   echo 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"' >> "${HOME}/.zshrc"
 fi
 
+source ~/.zshrc
+
 verboseLog "Zsh setup completed successfully!"
