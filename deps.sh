@@ -27,34 +27,30 @@ fi
 verboseLog "Installing dependencies..."
 $install_cmd git curl zsh kitty
 
-chsh -s /bin/zsh
-
-# Set ZDOTDIR for user-specific Zsh configuration
-export ZDOTDIR="${HOME}/.config/zshconf"
-mkdir -p "$ZDOTDIR"
-
-# Clone your terminal configuration repository
-if [[ ! -d "$ZDOTDIR" ]]; then
-  git clone "https://github.com/danielvxsp/terminal-configuration.git" "$ZDOTDIR"
-  chmod -R 755 "$ZDOTDIR"
+# Set Zsh as the default shell right after install
+if [[ "$SHELL" != "/bin/zsh" ]]; then
+  chsh -s /bin/zsh
+  echo "Zsh is now the default shell. Please restart the terminal to use Zsh."
 else
-  echo "$ZDOTDIR already exists. Skipping clone..."
+  echo "Zsh is already the default shell."
 fi
 
-# Copy .zshrc and .p10k.zsh files to ZDOTDIR
+# Clone your terminal configuration repository directly to the home directory
+TERMINAL_CONFIG_DIR="${HOME}/.terminal-config"
+if [[ ! -d "$TERMINAL_CONFIG_DIR" ]]; then
+  git clone "https://github.com/danielvxsp/terminal-configuration.git" "$TERMINAL_CONFIG_DIR"
+  chmod -R 755 "$TERMINAL_CONFIG_DIR"
+else
+  echo "$TERMINAL_CONFIG_DIR already exists. Skipping clone..."
+fi
+
+# Copy .zshrc and .p10k.zsh files to $HOME directory
 verboseLog "Copying Zsh configuration files..."
-if [[ -f "${ZDOTDIR}/.zshrc" ]]; then
-  cp "${ZDOTDIR}/.zshrc" "${HOME}/.zshrc"
+if [[ -f "${TERMINAL_CONFIG_DIR}/.zshrc" ]]; then
+  cp "${TERMINAL_CONFIG_DIR}/.zshrc" "${HOME}/.zshrc"
   echo ".zshrc copied successfully!"
 else
   echo ".zshrc file not found in the repository!"
-fi
-
-if [[ -f "${ZDOTDIR}/.p10k.zsh" ]]; then
-  cp "${ZDOTDIR}/.p10k.zsh" "${HOME}/.p10k.zsh"
-  echo ".p10k.zsh copied successfully!"
-else
-  echo ".p10k.zsh file not found in the repository!"
 fi
 
 # Install Oh My Zsh in its default location (~/.oh-my-zsh)
@@ -67,10 +63,17 @@ fi
 
 # Install Powerlevel10k in its default location (~/.oh-my-zsh/custom/themes/powerlevel10k)
 if [[ ! -d "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k" ]]; then
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k"
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${HOME}/.oh-my-zsh/custom/themes/powerlevel10k
   echo "Powerlevel10k installed."
 else
   echo "Powerlevel10k is already installed."
+fi
+
+if [[ -f "${TERMINAL_CONFIG_DIR}/.p10k.zsh" ]]; then
+  cp "${TERMINAL_CONFIG_DIR}/.p10k.zsh" "${HOME}/.p10k.zsh"
+  echo ".p10k.zsh copied successfully!"
+else
+  echo ".p10k.zsh file not found in the repository!"
 fi
 
 # Ensure Powerlevel10k is sourced in .zshrc
@@ -78,21 +81,4 @@ if ! grep -q 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel1
   echo 'source "${HOME}/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"' >> "${HOME}/.zshrc"
 fi
 
-# Ensure .p10k.zsh is sourced
-if ! grep -q 'source "${HOME}/.p10k.zsh"' "${HOME}/.zshrc"; then
-  echo 'source "${HOME}/.p10k.zsh"' >> "${HOME}/.zshrc"
-  echo ".p10k.zsh sourced successfully!"
-fi
-
-# Set Zsh as the default shell
-if [[ "$SHELL" != "/bin/zsh" ]]; then
-  chsh -s /bin/zsh
-  echo "Zsh is now the default shell. Please restart the terminal to use Zsh."
-else
-  echo "Zsh is already the default shell."
-fi
-
-# Load the Zsh configuration
-source "${HOME}/.zshrc"
-
-verboseLog "Zsh and Powerlevel10k setup completed successfully!"
+verboseLog "Zsh setup completed successfully!"
