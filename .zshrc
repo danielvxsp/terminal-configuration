@@ -8,16 +8,16 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Which plugins would you like to load?
-# FIX get zsh autocomplete to enable
-plugins=(git) 
+plugins=(git zsh-autosuggestions)
 
 # Source Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
-print 'going to source ~/.p10k.zsh; press enter to continue'
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Powerlevel10k configuration
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 # Preferred editor for local and remote sessions
+# Uncomment if you'd like to use these
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
@@ -25,5 +25,5 @@ print 'going to source ~/.p10k.zsh; press enter to continue'
 # fi
 
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# alias zshconfig="vim ~/.zshrc"
+# alias ohmyzsh="vim ~/.oh-my-zsh"
