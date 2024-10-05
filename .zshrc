@@ -8,13 +8,14 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Which plugins would you like to load?
-plugins=(git)
+# FIX get zsh autocomplete to enable
+plugins=(git) 
 
 # Source Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
 # Load Powerlevel10k configuration
-source "$HOME/.p10k.zsh"
+source ~/.p10k.zsh
 
 # User configuration
 
