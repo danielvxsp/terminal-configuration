@@ -5,7 +5,12 @@ Download and run the installer
 ```
 wget -O - "https://raw.githubusercontent.com/danielvxsp/terminal-configuration/main/deps.sh" | bash
 ```  
-this script installs zsh, oh-my-zsh, powerlevel10k and moves the config files to the .config directory
+this script installs zsh, oh-my-zsh, powerlevel10k and moves the config files to the .config directory  
+
+set zsh as default manually  
+```
+chsh -s /bin/zsh
+```
 
 ## kitty  
 install kitty on your system  
