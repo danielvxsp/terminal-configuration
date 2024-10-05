@@ -14,9 +14,6 @@ plugins=(git)
 # Source Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
-# Load Powerlevel10k configuration
-source ~/.p10k.zsh
-
 # User configuration
 
 # Preferred editor for local and remote sessions
